@@ -40,13 +40,13 @@ casper.start(url, function() {
 }).then(function() {
   this.fill(queries.login_form, { Passwd: config.password });
   this.click("#signIn"); 
-  //this.capture('captures/capture-1.png');
+  this.capture('captures/capture-1.png');
   this.waitForSelector(queries.input);
 }).then(function() {
   this.echo('Signed in as ' + config.email);
   this.each(search_queries, function(self, line) {
     line = line.replace(/^\s/, '');
-    this.wait(1200, function() {
+    this.wait(5000, function() {
       self.echo(line);
       self.sendKeys(queries.input, line, { keepFocus: true });
       this.waitForSelector(queries.submit, function() {
