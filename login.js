@@ -13,12 +13,25 @@ const queries = {
   results:      '.page-content .my_alerts'
 };
 
+function getLine(stream) {
+  return stream.readLine();
+}
+
+var stream         = fs.open('./data/alerts.csv', 'r'),
+    line           = getLine(stream),
+    search_queries = [],
+    i              = 0;
+
+while (line) {
+  line = getLine(stream);
+  search_queries[i] = line;
+  i++;
+}
 
 casper.start(url, function() {
   this.waitForSelector(queries.login_form);
 }).then(function() {
-  this.echo(this.getTitle());
-  this.capture('captures/capture-1.png');
+  this.echo('Logging in to ' + this.getTitle());
   this.fill(queries.login_form, { Email: config.email });
   this.click('#next'); 
   this.wait(500);
@@ -26,24 +39,25 @@ casper.start(url, function() {
   this.waitForSelector("#Passwd");
 }).then(function() {
   this.fill(queries.login_form, { Passwd: config.password });
-  this.capture('captures/capture-2.png');
   this.click("#signIn"); 
-  this.wait(500);
-}).then(function() {
-  this.sendKeys(queries.input, 'Aaron Copland', { keepFocus: true });
-  this.waitForSelector(queries.submit);
-}).then(function() {
-  this.click(queries.submit);
+  //this.capture('captures/capture-1.png');
   this.waitForSelector(queries.input);
 }).then(function() {
-  this.sendKeys(queries.input, 'Nixon in China', { keepFocus: true });
-  this.waitForSelector(queries.submit);
+  this.echo('Signed in as ' + config.email);
+  this.each(search_queries, function(self, line) {
+    line = line.replace(/^\s/, '');
+    this.wait(1200, function() {
+      self.echo(line);
+      self.sendKeys(queries.input, line, { keepFocus: true });
+      this.waitForSelector(queries.submit, function() {
+        this.click(queries.submit);
+        this.echo('Added alert: ' + line);
+      });
+    });
+  });
 }).then(function() {
-  this.capture('captures/capture-3.png');
-  this.click(queries.submit);
-  this.waitForSelector(queries.results);
-}).then(function() {
-  this.capture('captures/capture-4.png');
+  //this.capture('captures/capture-4.png');
+  this.echo('Done!');
 });
 
 casper.run();

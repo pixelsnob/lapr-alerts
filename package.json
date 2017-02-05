@@ -9,7 +9,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "./node_modules/casperjs/bin/casperjs --verbose --log-level=debug login.js",
+    "start-debug": "./node_modules/casperjs/bin/casperjs --verbose --log-level=debug login.js",
+    "start": "./node_modules/casperjs/bin/casperjs login.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
