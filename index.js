@@ -35,7 +35,7 @@ function deleteAlertsRecursive() {
     this.waitForSelector(selectors.alert_delete, function() {
       this.click(selectors.alert_delete);
       this.echo('deleted');
-      this.wait(1, function() {
+      this.wait(500, function() {
         this.reload(deleteAlertsRecursive.bind(this));
       });
     });
@@ -74,7 +74,7 @@ casper.start(url, function() {
   this.each(alerts, function(self, line) {
     line = line.replace(/^\s/, '');
     // Some time between requests to keep us from being banned
-    this.wait(1200, function addAlert() {
+    this.wait(200, function addAlert() {
       this.sendKeys(selectors.input, line, { keepFocus: true });
       this.waitForSelector(selectors.submit, function() {
         this.click(selectors.submit);
