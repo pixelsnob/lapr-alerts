@@ -31,15 +31,14 @@ while (line = stream.readLine()) {
 }
 
 function deleteAlertsRecursive() {
-  if (this.exists(selectors.alert_delete)) {
-    this.waitForSelector(selectors.alert_delete, function() {
-      this.click(selectors.alert_delete);
-      this.echo('deleted');
-      this.wait(500, function() {
-        this.reload(deleteAlertsRecursive.bind(this));
-      });
+  this.waitForSelector(selectors.alert_delete, function() {
+    this.click(selectors.alert_delete);
+    this.wait(1000, function() {
+      this.reload(deleteAlertsRecursive.bind(this));
     });
-  }
+  }, function() {
+    this.echo('All alerts deleted');
+  });
 }
 
 casper.start(url, function() {
@@ -67,7 +66,6 @@ casper.start(url, function() {
 
 }).then(function removeAllAlerts() {
   deleteAlertsRecursive.call(this);
-
 }).then(function addAlerts() {
   var i = 1;
   this.echo('Attempting to add ' + alerts.length + ' alerts');
