@@ -16,7 +16,8 @@ const selectors = {
   submit:         '#create_alert',
   results:        '.page-content .my_alerts',
   captcha:        '#captcha',
-  captcha_submit: 'input[name="submit"]'
+  captcha_submit: 'input[name="submit"]',
+  alert_delete:   '#manage-alerts-div ul li.alert_instance:first-child .delete_button'
 };
 
 var stream  = fs.open('./data/alerts.csv', 'r'),
@@ -27,6 +28,18 @@ var stream  = fs.open('./data/alerts.csv', 'r'),
 while (line = stream.readLine()) {
   alerts[i] = line;
   i++;
+}
+
+function deleteAlertsRecursive() {
+  if (this.exists(selectors.alert_delete)) {
+    this.waitForSelector(selectors.alert_delete, function() {
+      this.click(selectors.alert_delete);
+      this.echo('deleted');
+      this.wait(1, function() {
+        this.reload(deleteAlertsRecursive.bind(this));
+      });
+    });
+  }
 }
 
 casper.start(url, function() {
@@ -47,17 +60,21 @@ casper.start(url, function() {
     system.stdout.writeLine('Provide captcha value to continue: ');
     this.sendKeys(selectors.captcha, system.stdin.readLine());
     this.click(selectors.captcha_submit);
-    this.waitForSelector(selectors.input);
   });
 
-}).then(function addAlerts() {
+}).then(function signedIn() {
   this.echo('Signed in as ' + config.email);
+
+}).then(function removeAllAlerts() {
+  deleteAlertsRecursive.call(this);
+
+}).then(function addAlerts() {
   var i = 1;
   this.echo('Attempting to add ' + alerts.length + ' alerts');
   this.each(alerts, function(self, line) {
     line = line.replace(/^\s/, '');
     // Some time between requests to keep us from being banned
-    this.wait(500, function addAlert() {
+    this.wait(1200, function addAlert() {
       this.sendKeys(selectors.input, line, { keepFocus: true });
       this.waitForSelector(selectors.submit, function() {
         this.click(selectors.submit);
