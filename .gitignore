@@ -3,7 +3,7 @@ node_modules/
 captures/
 data/
 
-config*
+config.json
 
 *.swp
 *.grunt
