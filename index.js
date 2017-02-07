@@ -33,7 +33,7 @@ while (line = stream.readLine()) {
 function deleteAlertsRecursive() {
   this.waitForSelector(selectors.alert_delete, function() {
     this.click(selectors.alert_delete);
-    this.wait(1000, function() {
+    this.waitForSelectorTextChange('.num_alerts', function() {
       this.reload(deleteAlertsRecursive.bind(this));
     });
   }, function() {
@@ -66,6 +66,7 @@ casper.start(url, function() {
 
 }).then(function removeAllAlerts() {
   deleteAlertsRecursive.call(this);
+
 }).then(function addAlerts() {
   var i = 1;
   this.echo('Attempting to add ' + alerts.length + ' alerts');
