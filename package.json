@@ -9,8 +9,10 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start-debug": "./node_modules/casperjs/bin/casperjs --verbose --log-level=debug index.js",
-    "start": "./node_modules/casperjs/bin/casperjs index.js",
+    "import-debug": "./node_modules/casperjs/bin/casperjs --verbose --log-level=debug import.js",
+    "import": "./node_modules/casperjs/bin/casperjs import.js",
+    "delete-debug": "./node_modules/casperjs/bin/casperjs delete-all.js --verbose --log-level=debug",
+    "delete": "./node_modules/casperjs/bin/casperjs delete-all.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
