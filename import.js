@@ -5,6 +5,7 @@ const casper                = require('casper').create(),
       selectors             = require('./lib/selectors'),
       stream                = fs.open('./data/alerts.csv', 'r'),
       deleteAlertsRecursive = require('./lib/delete'),
+      _                     = require('underscore')
       login                 = require('./lib/login');
 
 var line,
@@ -16,21 +17,23 @@ while (line = stream.readLine()) {
   i++;
 }
 
+alerts = _.uniq(alerts);
+
 login.apply(casper)
-  .then(deleteAlertsRecursive.bind(casper))
   .then(function addAlerts() {
     var i = 1;
     this.echo('Attempting to add ' + alerts.length + ' alerts');
     this.each(alerts, function(self, line) {
       line = line.replace(/^\s/, '');
-      // Some time between requests to keep us from being banned
-      this.wait(700, function addAlert() {
-        this.sendKeys(selectors.input, line, { keepFocus: true });
-        this.waitForSelector(selectors.submit, function() {
-          this.click(selectors.submit);
-          this.echo(i + '. [Added] ' + line);
-          i++;
-        });
+      this.wait(1200).then(function() {
+        this.sendKeys(selectors.input, line, { keepFocus: true })
+      }).then(function() {
+        this.waitForSelector(selectors.submit);
+      }).then(function() {
+        this.click(selectors.submit);
+        this.capture('captures/add-' + i + '.png');
+        this.echo(i + '. [Added] ' + line);
+        i++;
       });
     });
   })
