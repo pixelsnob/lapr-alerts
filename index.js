@@ -1,31 +1,28 @@
 
-const path = require('path');
-const multer = require('multer');
-
-const multer_storage = multer.diskStorage({
-  destination : path.resolve('uploads'),
-  filename: (req, file, cb) => {
-    cb(null, 'alerts');
-  }
-});
-
-const express  = require('express'),
-      app      = express(),
-      server   = require('http').Server(app),
-      pug      = require('pug'),
-      logger   = require('morgan'),
-      cparser  = require('cookie-parser')
-      bparser  = require('body-parser')
-      upload   = multer({ storage: multer_storage }),
-      csv      = require('csv'),
-      port     = 3007,
-      io       = require('socket.io')(server);
+const path = require('path'),
+  multer = require('multer'),
+  multer_storage = multer.diskStorage({
+    destination : path.resolve('uploads'),
+    filename: (req, file, cb) => {
+      cb(null, 'alerts');
+    }
+  }),
+  express  = require('express'),
+  Promise  = require('bluebird'),
+  app      = express(),
+  server   = require('http').Server(app),
+  pug      = require('pug'),
+  logger   = require('morgan'),
+  cparser  = require('cookie-parser')
+  bparser  = require('body-parser')
+  upload   = multer({ storage: multer_storage }),
+  csv      = Promise.promisifyAll(require('csv')),
+  fs       = Promise.promisifyAll(require('fs')),
+  port     = 3007,
+  spawn    = require('child_process').spawn,
+  io       = require('socket.io')(server);
 
 io.setMaxListeners(0);
-
-
-const spawn = require('child_process').spawn;
-const fs = require('fs');
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -37,30 +34,18 @@ app.use(cparser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.route('/').get((req, res, next) => {
-  res.render('index', { title: 'index' });
+  res.render('index', { title: 'Upload your file' });
 }).post(upload.single('alerts'), (req, res, next) => {
   // Read uploaded file
-  fs.readFile('uploads/alerts', 'utf8', (err, data) => {
-    if (err) {
-      return next(err);
-    }
-    // Parse csv
-    let csv_opts = { trim: true };
-    csv.parse(data, csv_opts, (err, parsed) => {
-      fs.writeFile('uploads/alerts.json', JSON.stringify(parsed), (err) => {
-        if (err) {
-          return next(err);
-        }
-        res.render('index', { title: 'index2' });
-      });
-    });
-  });
-  
+  fs.readFileAsync('./uploads/alerts', 'utf8')
+    .then(data => csv.parseAsync(data, { trim: true }))
+    .then(parsed => fs.writeFileAsync('uploads/alerts.json', JSON.stringify(parsed)))
+    .then(() => res.render('index', { title: 'File uploaded' }))
+    .error(next);
 });
 
-let processes = [];
-
-let curr_proc;
+let processes = [],
+  curr_proc;
 
 io.on('connection', (io) => {
   const cancelListener = function() {
