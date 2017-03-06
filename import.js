@@ -1,31 +1,23 @@
 
-const casper                = require('casper').create(),
+var   casper                = require('casper').create(),
       fs                    = require('fs'),
       config                = require('./config.json'),
       selectors             = require('./lib/selectors'),
-      stream                = fs.open('./data/alerts.csv', 'r'),
       deleteAlertsRecursive = require('./lib/delete'),
-      _                     = require('underscore')
       login                 = require('./lib/login');
 
-var line,
-    alerts  = [],
-    i       = 0;
-
-while (line = stream.readLine()) {
-  alerts[i] = line;
-  i++;
-}
-
-alerts = _.uniq(alerts);
+// Due to issues with importing other modules, any csv cleaning needs to be done
+// in a separate script and saved to a JSON file
+var alerts_json = fs.read('uploads/alerts.json'),
+    alerts      = JSON.parse(alerts_json);
 
 login.apply(casper)
   .then(function addAlerts() {
     var i = 1;
     this.echo('Attempting to add ' + alerts.length + ' alerts');
     this.each(alerts, function(self, line) {
-      line = line.replace(/^\s/, '');
-      this.wait(1200).then(function() {
+      var line = line.join(' ');
+      this.wait(6000).then(function() {
         this.sendKeys(selectors.input, line, { keepFocus: true })
       }).then(function() {
         this.waitForSelector(selectors.submit);
@@ -42,5 +34,4 @@ login.apply(casper)
   });
 
 casper.run();
-
 

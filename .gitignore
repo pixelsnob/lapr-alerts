@@ -1,6 +1,7 @@
 
 node_modules/
 captures/
+uploads/
 data/
 
 config.json

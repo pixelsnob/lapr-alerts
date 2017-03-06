@@ -1,0 +1,34 @@
+doctype html
+html
+  head
+    title= title
+
+  body
+    block content
+    ul
+      li
+        a#start(href="#") Start
+      li
+        a#cancel(href="#") Cancel
+      li
+        a#delete(href="#") Delete
+      li
+        a#clear-status(href="#") Clear status msgs
+      
+    code#status
+     
+    script(type="text/javascript", src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js")
+    script(type="text/javascript").
+      const $ = (sel) => document.querySelector(sel);
+      const socket = io.connect('http://localhost:3007');
+      socket.on('status', function (data) {
+        $('#status').innerHTML += ('<br>' + data);
+      });
+      $('#start').onclick = () => socket.emit('import', true);
+      $('#cancel').onclick = () => socket.emit('cancel', true);
+      $('#delete').onclick = () => socket.emit('delete-all', true);
+      $('#clear-status').onclick = () => $('#status').innerHTML = '';
+
+
+      
+      
