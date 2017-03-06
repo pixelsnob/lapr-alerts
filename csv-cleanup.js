@@ -12,6 +12,6 @@ fs.readFileAsync('./uploads/alerts', 'utf8')
   .then(data => csv.parseAsync(data, { trim: true }))
   .then(csv.stringifyAsync)
   .then(data => fs.writeFileAsync(`./uploads/${filename}`, data))
-  .then(() => console.log(`CSV cleaned and saved as ${filename}`))
+  .then(() => console.log('CSV cleaned and saved as %s', filename))
   .error(console.err);
 
