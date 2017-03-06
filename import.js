@@ -17,7 +17,7 @@ login.apply(casper)
     this.echo('Attempting to add ' + alerts.length + ' alerts');
     this.each(alerts, function(self, line) {
       var line = line.join(' ');
-      this.wait(6000).then(function() {
+      this.wait(1200).then(function() {
         this.sendKeys(selectors.input, line, { keepFocus: true })
       }).then(function() {
         this.waitForSelector(selectors.submit);

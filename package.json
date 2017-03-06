@@ -4,6 +4,7 @@
   "description": "Google Alerts Import/Export Utility",
   "main": "index.js",
   "dependencies": {
+    "bluebird": "^3.5.0",
     "body-parser": "^1.16.0",
     "casperjs": "^1.1.3",
     "cookie-parser": "^1.4.3",
@@ -22,6 +23,7 @@
     "import": "./node_modules/casperjs/bin/casperjs import.js",
     "delete-debug": "./node_modules/casperjs/bin/casperjs delete-all.js --verbose --log-level=debug",
     "delete": "./node_modules/casperjs/bin/casperjs delete-all.js",
+    "csv-cleanup": "node csv-cleanup.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
