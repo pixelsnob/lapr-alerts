@@ -39,7 +39,9 @@ app.route('/').get((req, res, next) => {
   // Read uploaded file
   fs.readFileAsync('./uploads/alerts', 'utf8')
     .then(data => csv.parseAsync(data, { trim: true }))
-    .then(parsed => fs.writeFileAsync('uploads/alerts.json', JSON.stringify(parsed)))
+    // CSV parser doesn't take care of whitespace inside double-quotes
+    .then(data => data.map(row => row.map(col => col.trim())))
+    .then(data => fs.writeFileAsync('uploads/alerts.json', JSON.stringify(data)))
     .then(() => res.render('index', { title: 'File uploaded' }))
     .error(next);
 });
