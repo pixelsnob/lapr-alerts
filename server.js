@@ -16,11 +16,10 @@ const path = require('path'),
   cparser  = require('cookie-parser')
   bparser  = require('body-parser')
   upload   = multer({ storage: multer_storage }),
-  csv      = Promise.promisifyAll(require('csv')),
-  fs       = Promise.promisifyAll(require('fs')),
   port     = 3007,
   spawn    = require('child_process').spawn,
-  io       = require('socket.io')(server);
+  io       = require('socket.io')(server),
+  csv      = require('./lib/csv');
 
 io.setMaxListeners(0);
 
@@ -36,13 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.route('/').get((req, res, next) => {
   res.render('index', { title: 'Upload your file' });
 }).post(upload.single('alerts'), (req, res, next) => {
-  // Read uploaded file
-  fs.readFileAsync('./uploads/alerts', 'utf8')
-    .then(data => csv.parseAsync(data, { trim: true }))
-    // CSV parser doesn't take care of whitespace inside double-quotes
-    .then(data => data.map(row => row.map(col => col.trim())))
-    .then(data => fs.writeFileAsync('uploads/alerts.json', JSON.stringify(data)))
-    .then(() => res.render('index', { title: 'File uploaded' }))
+  csv.saveAsJSON().then(() => res.render('index', { title: 'File uploaded' }))
     .error(next);
 });
 
