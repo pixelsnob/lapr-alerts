@@ -35,7 +35,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.route('/').get((req, res, next) => {
   res.render('index', { title: 'Upload your file' });
 }).post(upload.single('alerts'), (req, res, next) => {
-  csv.saveAsJSON().then(() => res.render('index', { title: 'File uploaded' }))
+  csv.saveAsJSON()
+    .then(() => res.render('index', { title: 'File uploaded' }))
     .error(next);
 });
 
