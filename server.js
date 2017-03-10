@@ -37,7 +37,7 @@ app.route('/').get((req, res, next) => {
 }).post(upload.single('alerts'), (req, res, next) => {
   csv.saveAsJSON()
     .then(() => res.render('index', { title: 'File uploaded' }))
-    .error(next);
+    .catch(next);
 });
 
 let processes = [],
