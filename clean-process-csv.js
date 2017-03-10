@@ -2,6 +2,9 @@
 const csv = require('./lib/csv');
 
 csv.saveAsJSON()
-  .then(() => console.log('CSV files created'))
-  .catch(console.err);
+  .then(({ unique, duplicates }) => {
+    console.log('Unique records: %d', unique.length);
+    console.log('Duplicate records: %d', duplicates.length);
+  })
+  .catch(console.dir);
 
