@@ -10,7 +10,7 @@ var alerts_json = fs.read('uploads/alerts.json'),
     alerts      = JSON.parse(alerts_json);
 
 alerts.sort(function(a, b) {
-  return -a[0].localeCompare(b[0]);
+  return a[0].localeCompare(b[0]);
 });
 
 login.apply(casper)
