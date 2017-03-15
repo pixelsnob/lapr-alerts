@@ -13,7 +13,7 @@ const path = require('path'),
   app      = express(),
   server   = require('http').Server(app),
   pug      = require('pug'),
-  logger   = require('morgan'),
+  //logger   = require('morgan'),
   bparser  = require('body-parser')
   upload   = multer({ storage: multer_storage }),
   port     = 3007,
@@ -40,7 +40,7 @@ require('./socketio-server')(io);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use(logger('dev'));
+//app.use(logger('dev'));
 app.use(bparser.json());
 app.use(bparser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'client')));

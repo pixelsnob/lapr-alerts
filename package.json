@@ -27,7 +27,8 @@
     "delete-debug": "./node_modules/casperjs/bin/casperjs delete-all.js --verbose --log-level=debug",
     "delete": "./node_modules/casperjs/bin/casperjs delete-all.js",
     "csv-cleanup": "node csv-cleanup.js",
-    "build-client": "webpack --config webpack-client.js --progress --watch",
+    "build-client": "webpack --config webpack-client.js --progress",
+    "build-watch-client": "webpack --config webpack-client.js --progress --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
