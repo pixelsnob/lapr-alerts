@@ -2,6 +2,7 @@
 var   casper                = require('casper').create(),
       fs                    = require('fs'),
       config                = require('./config.json'),
+      shuffle               = require('./lib/shuffle'),
       selectors             = require('./lib/selectors'),
       deleteAlertsRecursive = require('./lib/delete'),
       login                 = require('./lib/login');
@@ -9,9 +10,10 @@ var   casper                = require('casper').create(),
 var alerts_json = fs.read('uploads/alerts.json'),
     alerts      = JSON.parse(alerts_json);
 
-alerts.sort(function(a, b) {
+/*alerts.sort(function(a, b) {
   return a[0].localeCompare(b[0]);
-});
+});*/
+alerts = shuffle(alerts);
 
 login.apply(casper)
   .then(function addAlerts() {

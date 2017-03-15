@@ -1,0 +1,9 @@
+
+#captcha {
+  max-height: 200px;
+  clip: rect(0, 200px, 0, 200px);
+  overflow: hidden;
+}
+#captcha img {
+  margin-bottom: 20px;
+}

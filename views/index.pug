@@ -1,9 +1,7 @@
 extends layout
 
 block content
-  script(type="text/javascript").
-  h1= title
-  form(enctype="multipart/form-data", action="/", method="post")
-    input(type="file", name="alerts")
-    input(type="submit", value="Submit")
+  #app
+  script(type="text/javascript", src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js")
+  script(type="text/javascript", src="dist/app.js").
 

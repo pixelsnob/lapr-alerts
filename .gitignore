@@ -3,6 +3,7 @@ node_modules/
 captures/
 uploads/
 data/
+client/dist
 
 config.json
 
