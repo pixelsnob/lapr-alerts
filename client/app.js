@@ -23,13 +23,15 @@ function connect(token) {
       delete: () => socket.emit('delete', true),
       upload: file => {
         fetch('/upload', { method: 'post', body: file })
-          //.then(res => { console.log(res); })
           .then(res => {
-            actions.writeStatus('File uploaded');
+            if (res.status == 200) {
+              actions.writeStatus('File uploaded');
+            } else {
+              actions.writeStatus('File upload failed!');
+            }
           })
           .catch(err => {
-            console.log(err);
-            // file upload failed
+            actions.writeStatus('File upload failed!');
           });
       }
     });

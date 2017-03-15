@@ -33,10 +33,22 @@ export default {
   
   showMain: handlers => {
     showMainView(templates.main);
-    $('#import').onclick = handlers.import;
-    $('#delete').onclick = handlers.delete;
-    $('#cancel').onclick = handlers.cancel;
-    $('#clear-status').onclick = clearStatus;
+    $('#import').onclick = ev => {
+      handlers.import();
+      return false;
+    };
+    $('#delete').onclick = ev => {
+      handlers.delete();
+      return false;
+    };
+    $('#cancel').onclick = ev => {
+      handlers.cancel();
+      return false;
+    };
+    $('#clear-status').onclick = ev => {
+      clearStatus();
+      return false;
+    };
     $('#upload-submit').onclick = ev => {
       const $file = $('input[type="file"]');
       if ($file.files) {

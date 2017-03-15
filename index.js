@@ -50,8 +50,11 @@ app.route('/').get((req, res, next) => {
 });
 
 app.route('/upload').post(upload.single('alerts'), (req, res, next) => {
+  if (!req.file || req.file.mimetype != 'text/csv') {
+    return next(new Error('File upload failed'));
+  }
   csv.saveAsJSON()
-    .then(() => res.json({ 'ok': 1 }))
+    .then(() => res.json({ ok: 1 }))
     .catch(next);
 });
 
@@ -74,6 +77,10 @@ app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   res.status(err.status || 500);
+  res.format({
+    html: () => res.render('error'),
+    json: () => res.json({ ok: 0 })
+  });
   res.render('error');
 });
 
