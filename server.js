@@ -13,7 +13,7 @@ const path = require('path'),
   app      = express(),
   server   = require('http').Server(app),
   pug      = require('pug'),
-  //logger   = require('morgan'),
+  logger   = require('morgan'),
   bparser  = require('body-parser')
   upload   = multer({ storage: multer_storage }),
   port     = 3007,
@@ -77,10 +77,10 @@ app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   res.status(err.status || 500);
-  res.format({
+  /*res.format({
     html: () => res.render('error'),
     json: () => res.json({ ok: 0 })
-  });
+  });*/
   res.render('error');
 });
 

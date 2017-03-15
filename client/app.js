@@ -6,7 +6,7 @@ actions.showLoginForm((username, password) => {
     .then(res => res.json())
     .then(res =>connect(res.token))
     .catch(err => {
-      // Login failed
+      alert('Login failed!');
     });
   return false;
 });

@@ -5,7 +5,7 @@ module.exports = io => {
   
   io.on('connection', (io) => {
     io.on('import', () => runProcess('import'));
-    io.on('delete', () => runProcess('delete-all'));
+    io.on('delete', () => runProcess('delete'));
     io.on('disconnect', stopProcess);
     io.on('cancel', stopProcess);
     io.on('captcha-answer', data => {
@@ -21,7 +21,7 @@ module.exports = io => {
       return;
     }
     proc = spawn('./node_modules/casperjs/bin/casperjs',
-      [ '--verbose', '--log-level=error', './' + action + '.js' ]);
+      [ '--verbose', '--log-level=error', './lib/casper/' + action + '.js' ]);
     proc.stderr.on('data', data => {
       io.emit('status', data.toString());
     });
