@@ -12,7 +12,7 @@ actions.showLoginForm((username, password) => {
 });
 
 function connect(token) {
-  const socket = io.connect('http://localhost:3007', {
+  const socket = io.connect('', {
     query: 'token=' + token
   });
   socket.on('error', console.error);
