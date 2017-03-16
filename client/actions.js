@@ -1,6 +1,6 @@
 
 import $ from './selector';
-import { innerHTML, html } from 'diffhtml';
+import { innerHTML } from 'diffhtml';
 import templates from './templates';
 
 function writeStatus(msg) {
@@ -13,8 +13,8 @@ function clearStatus() {
   $('#captcha-answer-form').innerHTML = '';
 }
 
-function showMainView($el) {
-  innerHTML($('#app'), $el);
+function showMainView(el) {
+  innerHTML($('#app'), el);
 }
 
 export default {
@@ -22,10 +22,10 @@ export default {
   writeStatus,
 
   showLoginForm: cb => {
-    const $login_form = document.createElement('div');
-    $login_form.innerHTML = templates.login_form;
-    showMainView($login_form);
-    $('input[type="submit"]', $login_form).onclick = ev => {
+    const login_form = document.createElement('div');
+    login_form.innerHTML = templates.login_form;
+    showMainView(login_form);
+    $('input[type="submit"]', login_form).onclick = ev => {
       cb($('input[name="username"]').value, $('input[name="password"]').value);
       return false;
     };
@@ -50,12 +50,8 @@ export default {
       return false;
     };
     $('#upload-submit').onclick = ev => {
-      const $file = $('input[type="file"]');
-      if ($file.files) {
-        const data = new FormData()
-        data.append('alerts', $file.files[0]);
-        handlers.upload(data);
-      }
+      const file = $('input[type="file"]');
+      handlers.upload(file.files[0]);
       return false;
     };
   },
@@ -68,18 +64,17 @@ export default {
       $('#captcha').innerHTML = '';
       $('#captcha').appendChild(img);
     };
-    const $form = $('#captcha-answer-form');
-    $form.innerHTML = templates.captcha_answer_form;
-    const $captcha_answer = $('input[name="captcha-answer"]');
-    $captcha_answer.focus();
-    $('input[name="submit"]', $form).onclick = ev => {
-      handlers.submit($captcha_answer.value);
+    const form = $('#captcha-answer-form');
+    form.innerHTML = templates.captcha_answer_form;
+    const captcha_answer = $('input[name="captcha-answer"]');
+    captcha_answer.focus();
+    $('input[name="submit"]', form).onclick = ev => {
+      handlers.submit(captcha_answer.value);
       $('#captcha').innerHTML = '';
       $('#captcha-answer-form').innerHTML = '';
       return false;
     };
   }
-
 
 };
 

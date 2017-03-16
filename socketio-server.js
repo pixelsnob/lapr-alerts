@@ -1,4 +1,6 @@
 
+const fileType = require('file-type');
+
 module.exports = io => {
 
   let proc;
@@ -8,13 +10,19 @@ module.exports = io => {
     io.on('delete', () => runProcess('delete'));
     io.on('disconnect', stopProcess);
     io.on('cancel', stopProcess);
+    io.on('upload', file => {
+      fs.writeFileAsync('./uploads/alerts', file).then(() => {
+        csv.saveAsJSON().then(() => io.emit('upload-success'))
+          .catch(err => io.emit('upload-fail', err));
+      });
+    });
     io.on('captcha-answer', data => {
       if (proc) {
         proc.stdin.write(data + "\n");
       }
     });
   });
-
+  
   function runProcess(action) {
     if (proc) {
       io.emit('status', 'Process already running');
@@ -38,7 +46,7 @@ module.exports = io => {
     });
     proc.on('close', stopProcess);
   }
-
+  
   function stopProcess() {
     if (proc) {
       proc.stdin.pause();

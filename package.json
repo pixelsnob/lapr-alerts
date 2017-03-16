@@ -22,8 +22,7 @@
     "pug": "^2.0.0-beta11",
     "socket.io": "^1.7.2",
     "socketio-auth": "^0.1.0",
-    "socketio-jwt": "^4.5.0",
-    "spdy": "^3.4.4"
+    "socketio-jwt": "^4.5.0"
   },
   "devDependencies": {},
   "scripts": {
