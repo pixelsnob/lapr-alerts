@@ -1,6 +1,4 @@
 
-const fileType = require('file-type');
-
 module.exports = io => {
 
   let proc;
