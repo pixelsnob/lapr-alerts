@@ -4,7 +4,10 @@ import { innerHTML } from 'diffhtml';
 import templates from './templates';
 
 function writeStatus(msg) {
-  $('#status').innerHTML += ('<br>' + msg);
+  const status_container = $('#status');
+  status_container.innerHTML += ('<br>' + msg);
+  status_container.scrollTop = status_container.scrollHeight;
+  
 }
 
 function clearStatus() {
@@ -26,7 +29,10 @@ export default {
     login_form.innerHTML = templates.login_form;
     showMainView(login_form);
     $('input[type="submit"]', login_form).onclick = ev => {
-      cb($('input[name="username"]').value, $('input[name="password"]').value);
+      cb(
+        $('input[name="username"]').value,
+        $('input[name="password"]').value
+      );
       return false;
     };
   },
