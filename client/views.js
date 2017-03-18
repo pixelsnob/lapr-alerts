@@ -52,7 +52,8 @@ export default {
       captcha.innerHTML = '';
       captcha.appendChild(img);
     };
-    const form = $('#captcha-answer-form');
+    const form           = $('#captcha-answer-form'),
+          captcha_answer = $('input[name="captcha-answer"]', form);
     innerHTML(form, templates.captcha_answer_form({
       onSubmit: ev => {
         handlers.submit(captcha_answer.value);
@@ -61,7 +62,6 @@ export default {
         return false;
       }
     }));
-    const captcha_answer = $('input[name="captcha-answer"]', form);
     captcha_answer.focus();
   }
 

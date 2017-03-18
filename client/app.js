@@ -1,7 +1,7 @@
 
-import actions from './actions';
+import views from './views';
 
-actions.showLoginForm({
+views.showLoginForm({
   onSubmit: (username, password) => {
     fetch(`/login?username=${username}&password=${password}`)
       .then(res => res.json())
@@ -19,20 +19,16 @@ function connect(token) {
   });
   socket.on('error', console.error);
   socket.on('connect', () => {
-    actions.showMain({
+    views.showMain({
       import: () => socket.emit('import', true),
       cancel: () => socket.emit('cancel', true),
       delete: () => socket.emit('delete', true),
       upload: file => socket.emit('upload', file)
     });
-    socket.on('upload-success', () => {
-      actions.writeStatus('File upload succeeded');
-    });
-    socket.on('upload-fail', () => {
-      actions.writeStatus('File upload failed!');
-    });
-    socket.on('status', actions.writeStatus);
-    socket.on('captcha', actions.showCaptcha({
+    socket.on('status', views.writeStatus);
+    socket.on('upload-success', () => views.writeStatus('File upload succeeded'))
+    socket.on('upload-fail', () => views.writeStatus('File upload failed!'));
+    socket.on('captcha', views.showCaptcha({
       submit: captcha_answer => socket.emit('captcha-answer', captcha_answer)
     }));
   });
