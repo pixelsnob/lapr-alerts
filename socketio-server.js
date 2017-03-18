@@ -9,6 +9,9 @@ module.exports = io => {
     io.on('disconnect', stopProcess);
     io.on('cancel', stopProcess);
     io.on('upload', file => {
+      if (!file) {
+        return io.emit('upload-fail', new Error('null file'));
+      }
       fs.writeFileAsync('./uploads/alerts', file).then(() => {
         csv.saveAsJSON().then(() => io.emit('upload-success'))
           .catch(err => io.emit('upload-fail', err));
