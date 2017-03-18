@@ -1,14 +1,16 @@
 
 import actions from './actions';
 
-actions.showLoginForm((username, password) => {
-  fetch(`/login?username=${username}&password=${password}`)
-    .then(res => res.json())
-    .then(res => connect(res.token))
-    .catch(err => {
-      alert('Login failed!');
-    });
-  return false;
+actions.showLoginForm({
+  onSubmit: (username, password) => {
+    fetch(`/login?username=${username}&password=${password}`)
+      .then(res => res.json())
+      .then(res => connect(res.token))
+      .catch(err => {
+        alert('Login failed!');
+      });
+    return false;
+  }
 });
 
 function connect(token) {
@@ -31,9 +33,7 @@ function connect(token) {
     });
     socket.on('status', actions.writeStatus);
     socket.on('captcha', actions.showCaptcha({
-      submit: (captcha_answer) => {
-        socket.emit('captcha-answer', captcha_answer); 
-      }
+      submit: captcha_answer => socket.emit('captcha-answer', captcha_answer)
     }));
   });
 }

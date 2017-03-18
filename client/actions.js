@@ -7,7 +7,6 @@ function writeStatus(msg) {
   const status_container = $('#status');
   status_container.innerHTML += ('<br>' + msg);
   status_container.scrollTop = status_container.scrollHeight;
-  
 }
 
 function clearStatus() {
@@ -24,62 +23,46 @@ export default {
     
   writeStatus,
 
-  showLoginForm: cb => {
-    const login_form = document.createElement('div');
-    login_form.innerHTML = templates.login_form;
-    showMainView(login_form);
-    $('input[type="submit"]', login_form).onclick = ev => {
-      cb(
-        $('input[name="username"]').value,
-        $('input[name="password"]').value
-      );
-      return false;
-    };
+  showLoginForm: handlers => {
+    showMainView(templates.login_form({
+      onSubmit: ev => {
+        handlers.onSubmit($('input[name="username"]').value,
+          $('input[name="password"]').value);
+        return false;
+      }
+    }));
   },
   
   showMain: handlers => {
-    showMainView(templates.main);
-    $('#import').onclick = ev => {
-      handlers.import();
-      return false;
-    };
-    $('#delete').onclick = ev => {
-      handlers.delete();
-      return false;
-    };
-    $('#cancel').onclick = ev => {
-      handlers.cancel();
-      return false;
-    };
-    $('#clear-status').onclick = ev => {
-      clearStatus();
-      return false;
-    };
-    $('#upload-submit').onclick = ev => {
-      const file = $('input[type="file"]');
-      handlers.upload(file.files[0]);
-      return false;
-    };
+    showMainView(templates.main(Object.assign(handlers, {
+      clearStatus,
+      uploadSubmit: ev => {
+        handlers.upload($('input[type="file"]').files[0]);
+        return false;
+      }
+    })));
   },
   
   showCaptcha: handlers => img_data => {
     writeStatus('Captcha required: google says🖕');
-    const img = new Image;
+    const captcha = $('#captcha'),
+          img     = new Image;
     img.src = img_data;
     img.onload = function() {
-      $('#captcha').innerHTML = '';
-      $('#captcha').appendChild(img);
+      captcha.innerHTML = '';
+      captcha.appendChild(img);
     };
     const form = $('#captcha-answer-form');
-    form.innerHTML = templates.captcha_answer_form;
-    const captcha_answer = $('input[name="captcha-answer"]');
+    innerHTML(form, templates.captcha_answer_form({
+      onSubmit: ev => {
+        handlers.submit(captcha_answer.value);
+        captcha.innerHTML = '';
+        form.innerHTML = '';
+        return false;
+      }
+    }));
+    const captcha_answer = $('input[name="captcha-answer"]', form);
     captcha_answer.focus();
-    $('input[name="submit"]', form).onclick = ev => {
-      handlers.submit(captcha_answer.value);
-      $('#captcha').innerHTML = '';
-      $('#captcha-answer-form').innerHTML = '';
-      return false;
-    };
   }
 
 };
